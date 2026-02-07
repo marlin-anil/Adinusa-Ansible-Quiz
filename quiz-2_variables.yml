@@ -1,0 +1,38 @@
+---
+- name: Playbook Quiz-2
+  hosts: pod-marlin-managed2
+  become: yes
+  remote_user: student
+  vars:
+    required_Pkg:
+      - apache2
+      - python3-urllib3
+    web_Service: apache2
+    content_File: /home/student/quiz-2/index.html
+    dest_File: /var/www/html/index.html
+  tasks:
+
+    - name: Install the required package
+      apt:
+        name: "{{ required_Pkg }}"
+        state: present
+
+    - name: Service is started and enabled
+      service:
+        name: "{{ web_Service }}"
+        enabled: yes
+        state: started
+
+    - name: Using copy module
+      copy:
+        src: "{{ content_File }}"
+        dest: "{{ dest_File }}"
+
+- name: Another play to testing
+  hosts: localhost
+  become: no
+  tasks:
+    - name: testing web server
+      uri:
+        url: http://pod-marlin-managed2/index.html
+        status_code: 200
