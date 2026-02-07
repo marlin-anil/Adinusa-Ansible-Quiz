@@ -1,0 +1,42 @@
+---
+- name: Quiz Playbook
+  hosts: pod-marlin-managed2
+  become: true
+  remote_user: student
+  tasks:
+    - name: Install the last version of packages
+      apt:
+        name:
+          - apache2
+          - mariadb-server
+          - php
+          - php-mysql
+        state: latest
+
+    - name: Ensure the apache2 is enabled and running latest
+      service:
+        name: apache2
+        enabled: yes
+        state: started
+
+    - name: Ensure the mariadb is running and enabled
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Copy web content
+      copy:
+        src: /home/student/quiz-1/index.html
+        dest: /var/www/html/index.php
+
+
+- name: Another play for peroformed on control node
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: test running web service
+      uri:
+        url: http://pod-marlin-managed2/index.php
+        status_code: 200
