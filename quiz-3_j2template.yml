@@ -1,0 +1,85 @@
+- name: Quiz Jinja 2 - Nginx & MariaDB Setup
+  hosts: all
+  become: true
+
+  vars:
+    required_pkg:
+      - nginx=1.23.1-1~jammy
+      - mariadb-server-10.9
+      - mariadb-client-10.9
+
+  tasks:
+
+    # ==================================================
+    # CLEAN OLD REPO (prevent previous errors)
+    # ==================================================
+
+    - name: Remove old repo files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/nginx.list
+        - /etc/apt/sources.list.d/mariadb.list
+        - /usr/share/keyrings/nginx.gpg
+
+    # ==================================================
+    # NGINX REPOSITORY (WORKING METHOD)
+    # ==================================================
+
+    - name: Install nginx signing key
+      shell: |
+        curl -fsSL https://nginx.org/keys/nginx_signing.key | \
+        gpg --dearmor -o /usr/share/keyrings/nginx.gpg
+      args:
+        creates: /usr/share/keyrings/nginx.gpg
+
+    - name: Add nginx repository
+      copy:
+        dest: /etc/apt/sources.list.d/nginx.list
+        content: |
+          deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/mainline/ubuntu jammy nginx
+
+    # ==================================================
+    # MARIADB REPOSITORY (OFFICIAL SCRIPT)
+    # ==================================================
+
+    - name: Install MariaDB repository
+      shell: |
+        curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | \
+        bash -s -- --mariadb-server-version=10.9
+
+    # ==================================================
+    # UPDATE APT CACHE
+    # ==================================================
+
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        force_apt_get: true
+
+    # ==================================================
+    # INSTALL REQUIRED PACKAGES
+    # ==================================================
+
+    - name: Install required packages
+      apt:
+        name: "{{ required_pkg }}"
+        state: present
+        force_apt_get: true
+
+    # ==================================================
+    # ENABLE & START SERVICES
+    # ==================================================
+
+    - name: Ensure nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Ensure mariadb is running
+      service:
+        name: mariadb
+        state: started
+        enabled: true
