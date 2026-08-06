@@ -1,0 +1,7 @@
+---
+- name: the final roles to quiz-4
+  hosts: pod
+  become: yes
+
+  roles:
+    - quiz-roles
