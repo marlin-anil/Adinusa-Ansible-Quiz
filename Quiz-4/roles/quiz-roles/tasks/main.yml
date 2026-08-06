@@ -1,0 +1,30 @@
+---
+- name: install apache2
+  apt:
+    name: apache2
+    state: latest
+    update_cache: yes
+
+- name: Configure Service
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: ensure quiz-roles.conf.j2 is installed to /etc/apache2/sites-available/quiz-roles.conf
+  template:
+    src: quiz-roles.conf.j2
+    dest: /etc/apache2/sites-available/quiz-roles.conf
+
+- name: Enable webserver configuration
+  command: a2ensite quiz-roles.conf
+  notify: Restart apache2
+
+- name: Disable default site
+  command: a2dissite 000-default.conf
+  notify: Restart apache2
+
+- name: html-quiz/ to /var/www/roles/{{ ansible_hostname }} on managed host.
+  copy:
+    src: html-quiz/
+    dest: /var/www/quiz-roles/{{ ansible_hostname }}/
