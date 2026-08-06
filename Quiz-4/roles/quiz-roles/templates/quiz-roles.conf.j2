@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+
+    ServerName quiz-roles.marlin-adinusa
+
+    DocumentRoot /var/www/quiz-roles/{{ ansible_hostname }}
+
+    <Directory /var/www/quiz-roles/{{ ansible_hostname }}>
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+</VirtualHost>
