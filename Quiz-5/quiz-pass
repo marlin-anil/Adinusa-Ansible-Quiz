@@ -1,0 +1,6 @@
+adinusa
+
+#i am entering the password for decrypt in this file
+#i am also need to change the permission of this file use 600 for user to read and write
+#add info for view the secret file i use this command "ansible-vault view quiz-Secret.yml"
+#and also if i want de-encrypt i use this command "ansible-vault decrypt quiz-Secret.yml"
