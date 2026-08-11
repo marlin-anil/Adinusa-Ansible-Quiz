@@ -1,33 +1,39 @@
-- name: Create user in managed 1
-  hosts: pod-marlin-managed1
+- name: create user in managed1
+  hosts: managed1-host-marlin
   become: yes
+  vars_files:
+    - secret.yml
   tasks:
     - name: create user ops
       user:
         name: "{{ item }}"
-        password: "{{ pass | password_hash ('sha512') }}"
+        password: "{{ pass | password_hash('sha512') }}"
         state: present
       loop: "{{ list_user_ops_managed1 }}"
+
     - name: create user dev
       user:
         name: "{{ item }}"
-        password: "{{ pass | password_hash ('sha512') }}"
+        password: "{{ pass | password_hash('sha512') }}"
         state: present
       loop: "{{ list_user_dev_managed1 }}"
-      
-- name: Create user in managed 2
-  hosts: pod-marlin-managed2
+
+- name: create user in managed2
+  hosts: managed2-host-marlin
   become: yes
+  vars_files:
+    - secret.yml
   tasks:
     - name: create user ops
       user:
         name: "{{ item }}"
-        password: "{{ pass | password_hash ('sha512') }}"
+        password: "{{ pass | password_hash('sha512') }}"
         state: present
       loop: "{{ list_user_ops_managed2 }}"
+
     - name: create user dev
       user:
         name: "{{ item }}"
-        password: "{{ pass | password_hash ('sha512') }}"
+        password: "{{ pass | password_hash('sha512') }}"
         state: present
       loop: "{{ list_user_dev_managed2 }}"
