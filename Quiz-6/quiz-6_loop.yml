@@ -24,7 +24,7 @@
         name: "{{ item }}"
         password: "{{ pass | password_hash ('sha512') }}"
         state: present
-       loop: "{{ list_user_ops_managed2 }}"
+      loop: "{{ list_user_ops_managed2 }}"
     - name: create user dev
       user:
         name: "{{ item }}"
