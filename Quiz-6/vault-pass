@@ -1,0 +1,3 @@
+#this file for plain text to entering password to run playbook or just to edit, view and de-encrypt file secret.yml
+#after saving this file, change the permission to privillage owner to read and write and 0 privillage for the groups or other
+belajaransible
