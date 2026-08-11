@@ -1,0 +1,6 @@
+# the name of inventory == name of files in group_vars
+[managed1-host-marlin]
+pod-marlin-managed1
+
+[managed2-host-marlin]
+pod-marlin-managed2
